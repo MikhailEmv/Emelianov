@@ -203,7 +203,7 @@ class InputConnect:
         elif self.word_for_choice.lower() == 'статистика':
             self.report.generate_image(*self.list_of_all_dictionaries)
         else:
-            print('Данные введены неверно')
+            print('Данные введены некорректно')
 
     def calc(self, dictionary: dict, value: str):
         common_vocabulary = dict()
