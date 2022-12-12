@@ -95,6 +95,7 @@ class InputConnect:
     def start_entering(self) -> None:
         self.file_name = input('Введите название файла: ')
         self.profession = input('Введите наименование профессии: ')
+        self.word_for_choice = input('Введите "Вакансии" или "Статистика": ')
         self.cities_count = 0
         self.report = Report()
 
@@ -197,7 +198,12 @@ class InputConnect:
         self.calc(self.cities_stats, "count")
         self.list_of_all_dictionaries.insert(0, inserted_data.profession)
         print(self.list_of_all_dictionaries, end='\n', sep='\n\n')
-        self.report.generate_pdf(*self.list_of_all_dictionaries)
+        if self.word_for_choice.lower() == 'вакансии':
+            self.report.generate_excel(*self.list_of_all_dictionaries)
+        elif self.word_for_choice.lower() == 'статистика':
+            self.report.generate_image(*self.list_of_all_dictionaries)
+        else:
+            print('Данные введены неверно')
 
     def calc(self, dictionary: dict, value: str):
         common_vocabulary = dict()
