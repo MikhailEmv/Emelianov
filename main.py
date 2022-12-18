@@ -17,6 +17,14 @@ import pdfkit
 
 
 class Vacancy:
+    """Класс вакансии
+
+    Attributes:
+        name (str): Имя
+        salary (int): Зарплата
+        area_name (str): Регион
+        published_at (str): Дата публикации
+    """
     currency_ratio = \
         {
             "AZN": 35.68,
@@ -32,6 +40,10 @@ class Vacancy:
         }
 
     def __init__(self, object_vacancy) -> None:
+        """Инициализирует класс вакансии из словаря вакансии
+
+        :param object_vacancy: Словарь вакансии
+        """
         self.name = object_vacancy['name']
         salary_from = int((float(("".join(object_vacancy['salary_from'].split())))))
         salary_to = int((float(("".join(object_vacancy['salary_to'].split())))))
@@ -41,11 +53,26 @@ class Vacancy:
 
 
 class DataSet:
+    """Класс множества данных (dataset)
+
+    Attributes:
+        vacancies_objects (str): Лист вакансий
+        file_name (str): Название файла
+    """
     def __init__(self, file_name: str, vacancies_objects: list) -> None:
+        """Конструктор класса DataSet
+
+        :param file_name: Название файла
+        :param vacancies_objects: Лист вакансий
+        """
         self.vacancies_objects = vacancies_objects
         self.file_name = file_name
 
     def __csv_reader(self) -> tuple:
+        """Приватный метод класса DataSet, выполняющий функции чтения файла
+
+        :return: tuple из двух листов
+        """
         headlines, vacancies = list(), list()
         with open(self.file_name, encoding='utf-8-sig') as file:
             vacancies_list, counter = csv.reader(file, delimiter=','), 0
@@ -67,6 +94,13 @@ class DataSet:
 
     @staticmethod
     def __csv_filer(reader: tuple, headlines: list) -> list:
+        """Приватный статический метод для фильтрации
+
+        :param reader: принимаем reader типа tuple - уже прочтенный файл
+        :param headlines: принимаем лист-шапку
+
+        :return: лист отфильтрованных вакансий
+        """
         vacancies_list = list()
         for line in reader:
             current_dictionary = dict()
@@ -76,23 +110,53 @@ class DataSet:
         return vacancies_list
 
     def put_vacancies(self) -> None:
+        """Вкладываем вакансии в новый объект
+
+        :return: nothing
+        """
         (vacancies, headlines) = self.__csv_reader()
         self.vacancies_objects = self.__csv_filer(vacancies, headlines)
 
 
 class CustomTuple:
+    """Класс CustomTuple
+
+    Attributes:
+        totalSalary (int): Количество цельных зарплат
+        count (int): Их общее количество
+    """
     def __init__(self, full_salary=0, counter=0) -> None:
+        """Конструктор класса CustomTuple
+
+        :param full_salary: Количество цельных зарплат
+        :param counter: Их общее количество
+        """
         self.totalSalary = full_salary
         self.count = counter
 
 
 class InputConnect:
+    """Класс ввода с консоли и вывода таблицы в консоль
+
+    Attributes:
+        list_of_all_dictionaries (list): Лист всех словарей с конкретизированной статистикой
+    """
     years_stats, cities_stats, vacancy_stats = dict(), dict(), dict()
 
     def __init__(self):
+        """Конструктор класса InputConnect
+        """
         self.list_of_all_dictionaries = list()
 
     def start_entering(self) -> None:
+        """Метод для ввода необходимых данных от пользователя
+        Attributes:
+            file_name (list): Имя файла
+            profession (str): Имя профессии
+            word_for_choice (str): Слово для выборки и нужд пользователя
+
+        :return: nothing
+        """
         self.file_name = input('Введите название файла: ')
         self.profession = input('Введите наименование профессии: ')
         self.word_for_choice = input('Введите "Вакансии" или "Статистика": ')
@@ -100,6 +164,12 @@ class InputConnect:
         self.report = Report()
 
     def count_vacancies(self, vacancies_list: list) -> None:
+        """Метод подсчета вакансий и их распределение по словарям
+
+        :param vacancies_list: Лист всех вакансий
+
+        :return: nothing
+        """
         for vacancy in vacancies_list:
             self.cities_count += 1
             current_year = int(vacancy.published_at.year)
@@ -121,6 +191,10 @@ class InputConnect:
                 self.vacancy_stats[current_year].count += 1
 
     def equalize_statistic(self) -> None:
+        """Метод нормировки статистики в конкретном словаре
+
+        :return: nothing
+        """
         for year in self.years_stats.keys():
             self.years_stats[year].totalSalary = \
                 int(self.years_stats[year].totalSalary //
@@ -149,6 +223,14 @@ class InputConnect:
     def print_first_string(string_for_output: str,
                            current_dictionary: dict,
                            value: str) -> None:
+        """Метод для печати с правильным оформлением вывода всей статистики в консоль
+
+        :param string_for_output: Строка на выход
+        :param current_dictionary: Текущий обработанный словарь
+        :param value: Конкретное значение для выборки
+
+        :return: nothing
+        """
         flag, index = False, 0
         print(string_for_output, end='')
         for year in current_dictionary.keys():
@@ -168,6 +250,15 @@ class InputConnect:
                      current_dictionary: dict,
                      names_list: list,
                      value: str) -> None:
+        """Печать статистики зависящей от конкретного города
+
+        :param string_for_output: Строка для вывода
+        :param current_dictionary: Текущий словарь со статистикой
+        :param names_list: Лист наименований
+        :param value: Конкретное значение для выборки
+
+        :return: nothing
+        """
         flag, index = False, 0
         print(string_for_output, end='')
         for current_name in names_list:
@@ -184,6 +275,10 @@ class InputConnect:
             print('}')
 
     def make_table(self):
+        """Метод вызова всего необходимого для печати
+
+        :return: nothing
+        """
         self.calc(self.years_stats, "totalSalary")
         self.calc(self.years_stats, "count")
         self.calc(self.vacancy_stats, "totalSalary")
@@ -206,6 +301,13 @@ class InputConnect:
             print('Данные введены неправильно')
 
     def calc(self, dictionary: dict, value: str):
+        """Метод вызволения словарей из объектов и добавления их в общий список
+
+        :param dictionary: Конкретный объект;
+        :param value: Конкретное значение для вызволения
+
+        :return: nothing
+        """
         common_vocabulary = dict()
         for year in dictionary.keys():
             common_vocabulary[year] = getattr(dictionary[year], value)
@@ -213,6 +315,13 @@ class InputConnect:
 
 
 def __auto_width(ws):
+    """
+    Внешняя функции выравнивания по ширине Excel-таблички
+
+    :param ws: Конкретная ячейка
+
+    :return: nothing
+    """
     for column_cells in ws.columns:
         new_column_length = max(len(str(cell.value)) for cell in column_cells)
         new_column_letter = (get_column_letter(column_cells[0].column))
@@ -221,6 +330,8 @@ def __auto_width(ws):
 
 
 class Report:
+    """Библиотека генерации файлов отчёта в виде .pdf .png .xlsx
+    """
     @staticmethod
     def generate_pdf(input_name: str,
                      dynamics_slr: dict,
@@ -229,6 +340,19 @@ class Report:
                      dynamics_count_vac_name: dict,
                      dynamics_slr_cities: dict,
                      dynamics_count_vac_cities: dict):
+        """Метод генерации отчета в виде .pdf совмещающего и графики, и таблицы
+
+        :param input_name: Название файла
+        :param dynamics_slr: Словарь с годами и зарплатами
+        :param dynamics_count_vac: Словарь с годами и количеством
+        :param dynamics_slr_name: Словарь с наименованием и зарплатой
+        :param dynamics_count_vac_name: Словарь с наименованием и количеством вакансий
+        :param dynamics_slr_cities: Словарь заплаты по городам
+        :param dynamics_count_vac_cities: Словарь с количеством вакансий по городам
+
+
+        :return: nothing
+        """
         headers1, headers2, headers3 = (["Год", "Средняя зарплата", f"Средняя зарплата - {input_name}",
                                          "Количество вакансий", f"Количество вакансий - {input_name}"],
                                         ["Город", "Уровень зарплат"], ["Город", "Доля вакансий"])
@@ -260,6 +384,19 @@ class Report:
                        dynamics_count_vac_name: dict,
                        dynamics_slr_cities: dict,
                        dynamics_count_vac_cities: dict):
+        """Метод генерации графиков отчета в .png
+
+        :param input_name: Название файла
+        :param dynamics_slr: Словарь с годами и зарплатами
+        :param dynamics_count_vac: Словарь с годами и количеством
+        :param dynamics_slr_name: Словарь с наименованием и зарплатой
+        :param dynamics_count_vac_name: Словарь с наименованием и количеством вакансий
+        :param dynamics_slr_cities: Словарь заплаты по городам
+        :param dynamics_count_vac_cities: Словарь с количеством вакансий по городам
+
+
+        :return: nothing
+        """
         fig = plt.figure(figsize=(10, 6))
         plt.rcParams['font.size'] = '8'
         width = 0.4
@@ -320,6 +457,18 @@ class Report:
                        dynamics_count_vac_name: dict,
                        dynamics_slr_cities: dict,
                        dynamics_count_vac_cities: dict):
+        """Генерация XLSX файла отчёта
+
+        :param input_name: Название файла
+        :param dynamics_slr: Словарь с годами и зарплатами
+        :param dynamics_count_vac: Словарь с годами и количеством
+        :param dynamics_slr_name: Словарь с наименованием и зарплатой
+        :param dynamics_count_vac_name: Словарь с наименованием и количеством вакансий
+        :param dynamics_slr_cities: Словарь заплаты по городам
+        :param dynamics_count_vac_cities: Словарь с количеством вакансий по городам
+
+        :return: nothing
+        """
         workbook = Workbook()
         stats_by_year = workbook.worksheets[0]
         stats_by_year.title = "Cтатистика по годам"
@@ -348,6 +497,12 @@ class Report:
 
     @staticmethod
     def workbook(wb):
+        """Нормировка конкретизированного workbook под свои задачи
+
+        :param wb: Конкретная ячейка
+
+        :return: nothing
+        """
         bold_font = Font(bold=True)
         thin = Side(border_style="thin", color="000000")
         outline = Border(top=thin, left=thin, right=thin, bottom=thin)
