@@ -15,6 +15,44 @@ from openpyxl.styles import Font, Border, Side
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
 
+from unittest import TestCase
+
+
+class VacancyTests(TestCase):
+    dictionary = \
+        {
+            'name': 'vacancies.csv',
+            'salary_from': 100,
+            'salary_to': 200,
+            'salary_currency': 150,
+            'area_name': 'area',
+            'published_at': '2022-06-14T11:44:58+0300'
+        }
+
+    def test_vacancy_type(self):
+        self.assertEqual(type(Vacancy(self.dictionary)).__name__, 'Vacancy')
+
+    def test_vacancy_area_name(self):
+        self.assertEqual(Vacancy(self.dictionary).area_name, 'area_name')
+
+    def test_vacancy_name(self):
+        self.assertEqual(Vacancy(self.dictionary).area_name, 'vacancies.csv')
+
+    def test_vacancy_salary(self):
+        self.assertEqual(Vacancy(self.dictionary).area_name, 22500)
+
+
+class DataSetTests(TestCase):
+    def test_dataset_type(self):
+        self.assertEqual(type(DataSet('vacancies_big.csv', ['information'])).__name__, 'DataSet')
+
+    def test_dataset_type2(self):
+        self.assertEqual(type(DataSet('vacancies_big.csv',
+                                      ['information']).vacancies_objects).__name__, 'list')
+
+    def test_dataset_name(self):
+        self.assertEqual(DataSet('vacancies_big.csv', ['information']).file_name, 'vacancies_big.csv')
+
 
 class Vacancy:
     """Класс вакансии
