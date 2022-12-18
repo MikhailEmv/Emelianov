@@ -42,7 +42,18 @@ class Vacancy:
     def __init__(self, object_vacancy) -> None:
         """Инициализирует класс вакансии из словаря вакансии
 
-        :param object_vacancy: Словарь вакансии
+        param object_vacancy: Словарь вакансии
+
+        >>> dictionary = {'name': 'vacancies.csv', 'salary_from': 100 ,'salary_to': 200,
+        >>> 'salary_currency': 150, 'area_name': 'area', 'published_at': '2022-06-14T11:44:58+0300'}
+        >>> type(Vacancy(dictionary)).__name__
+        'Vacancy'
+        >>> Vacancy(dictionary).area_name
+        'area'
+        >>> Vacancy(dictionary).name
+        'vacancies.csv'
+        >>> Vacancy(dictionary).salary
+        22500
         """
         self.name = object_vacancy['name']
         salary_from = int((float(("".join(object_vacancy['salary_from'].split())))))
@@ -62,8 +73,15 @@ class DataSet:
     def __init__(self, file_name: str, vacancies_objects: list) -> None:
         """Конструктор класса DataSet
 
-        :param file_name: Название файла
+        param file_name: Название файла
         :param vacancies_objects: Лист вакансий
+
+        >>> type(DataSet('vacancies_big.csv', ['information'])).__name__
+        'DataSet'
+        >>> type(DataSet('vacancies_big.csv', ['information']).vacancies_objects).__name__
+        'list'
+        >>> DataSet('vacancies_big.csv', ['information']).file_name
+        'vacancies_big.csv'
         """
         self.vacancies_objects = vacancies_objects
         self.file_name = file_name
@@ -130,6 +148,11 @@ class CustomTuple:
 
         :param full_salary: Количество цельных зарплат
         :param counter: Их общее количество
+
+        >>> CustomTuple().totalSalary
+        0
+        >>> CustomTuple().count
+        0
         """
         self.totalSalary = full_salary
         self.count = counter
@@ -359,10 +382,8 @@ class Report:
         rows1 = list(map(lambda year: [year] + [dictionary[year] for dictionary in
                                                 (dynamics_slr, dynamics_count_vac,
                                                  dynamics_slr_name, dynamics_count_vac_name)], dynamics_slr.keys()))
-        rows2 = list(map(lambda city: [
-            city, dynamics_slr_cities[city]], dynamics_slr_cities.keys()))
-        rows3 = list(map(lambda city: [
-            city, dynamics_count_vac_cities[city]], dynamics_count_vac_cities.keys()))
+        rows2 = list(map(lambda city: [city, dynamics_slr_cities[city]], dynamics_slr_cities.keys()))
+        rows3 = list(map(lambda city: [city, dynamics_count_vac_cities[city]], dynamics_count_vac_cities.keys()))
 
         env = Environment(loader=FileSystemLoader('.'))
         template = env.get_template("pdf_template.html")
@@ -370,11 +391,9 @@ class Report:
                                        vacancy_name=input_name, headers1=headers1, headers2=headers2,
                                        headers3=headers3,
                                        rows1=rows1, rows2=rows2, rows3=rows3)
-        config = pdfkit.configuration(
-            wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+        config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
         options = {'enable-local-file-access': None}
-        pdfkit.from_string(pdf_template, 'report.pdf',
-                           options=options, configuration=config)
+        pdfkit.from_string(pdf_template, 'report.pdf', options=options, configuration=config)
 
     @staticmethod
     def generate_image(input_name: str,
@@ -489,8 +508,7 @@ class Report:
                 row=i, column=2, value=dynamics_slr_cities[city])
         for i, city in enumerate(dynamics_count_vac_cities.keys(), 2):
             stats_by_city.cell(row=i, column=4, value=city)
-            stats_by_city.cell(
-                row=i, column=5, value=dynamics_count_vac_cities[city])
+            stats_by_city.cell(row=i, column=5, value=dynamics_count_vac_cities[city])
 
         self.workbook(workbook)
         workbook.save('report.xlsx')
