@@ -277,7 +277,6 @@ class InputConnect:
 
         for city in list_for_deleting:
             del [self.cities_stats[city]]
-
         for year in self.vacancy_stats.keys():
             if self.vacancy_stats[year].count != 0:
                 self.vacancy_stats[year].totalSalary = \
