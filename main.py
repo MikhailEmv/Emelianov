@@ -98,6 +98,9 @@ class Vacancy:
         salary_to = int((float(("".join(object_vacancy['salary_to'].split())))))
         self.salary = (salary_from + salary_to) * self.currency_ratio[object_vacancy['salary_currency']] // 2
         self.area_name = object_vacancy['area_name']
+        # str(parser.parse(dict_vacancy['published_at']).date())
+        # '.'.join(str(datetime.datetime.strptime(dict_vacancy['published_at'],
+        # '%Y-%m-%dT%H:%M:%S%z').date()).split('-'))
         self.published_at = datetime.datetime.strptime(object_vacancy['published_at'], '%Y-%m-%dT%H:%M:%S%z')
 
 
@@ -344,12 +347,12 @@ class InputConnect:
         self.calc(self.years_stats, "count")
         self.calc(self.vacancy_stats, "totalSalary")
         self.calc(self.vacancy_stats, "count")
-        cities_sorted = sorted(self.cities_stats, key=lambda x: self.cities_stats[x].totalSalary,
-                               reverse=True)
+        # if len(data_vacancies) == 0:
+        #    return {x: 0 for x in self.__list_years}
+        cities_sorted = sorted(self.cities_stats, key=lambda x: self.cities_stats[x].totalSalary, reverse=True)
         del cities_sorted[10:]
         self.calc(self.cities_stats, "totalSalary")
-        cities_sorted = sorted(self.cities_stats, key=lambda x: self.cities_stats[x].count,
-                               reverse=True)
+        cities_sorted = sorted(self.cities_stats, key=lambda x: self.cities_stats[x].count, reverse=True)
         del cities_sorted[10:]
         self.calc(self.cities_stats, "count")
         self.list_of_all_dictionaries.insert(0, inserted_data.profession)
