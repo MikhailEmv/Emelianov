@@ -274,6 +274,7 @@ class InputConnect:
                     int(self.cities_stats[city].totalSalary //
                         self.cities_stats[city].count)
                 self.cities_stats[city].count = percent_count
+
         for city in list_for_deleting:
             del [self.cities_stats[city]]
 
