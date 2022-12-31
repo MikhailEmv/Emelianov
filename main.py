@@ -396,6 +396,7 @@ def __auto_width(ws):
 class Report:
     """Библиотека генерации файлов отчёта в виде .pdf .png .xlsx
     """
+
     @staticmethod
     def generate_pdf(input_name: str,
                      dynamics_slr: dict,
